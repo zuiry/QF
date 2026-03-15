@@ -5,67 +5,36 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>replit</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="static/styles.css">
 </head>
 
-  <style>
-h1{
-  border: 1px solid black
-  
-}
-    .btn{
-      width: 100px;
-      height: 40px;
-      background-color:antiquewhite; 
-      transition: transform 250ms, background-color 250ms;
-
-
-
-    }
-
-    .btn:hover{
-      transform: translateY(-5px);
-      background-color:green;
-
-    }
-
-  </style>
-
+ 
   
 <body>
 
-  <h1 >  Quadratic Factorizer ~ Zuiry </h1>
+  <h1 class = "title">  QF </h1>
+
+<div class="container">
+    Coefficient a: <input type="number" name="a" id="a" class = "textbox"><br>
+    Coefficient b: <input type="number" name="b" id="b" class = "textbox"><br>
+    Coefficient c: <input type="number" name="c" id="c" class = "textbox"><br>
+    
+
+</div>
+  <br>
+    <button class = 'btn' onclick = 'Factorise(); fadeIn()'> Factorize Equation </button>
 
 
-    a: <input type="number" name="a" id="a"><br>
-    b: <input type="number" name="b" id="b"><br>
-    c: <input type="number" name="c" id="c"><br>
-    <br>
-    <button class = 'btn' onclick = 'Factorise()'> Click here to factorize! </button>
+<div class = "answerbox">
+  <p  id = "result2">  </p>
+
+</div>
 
 
-  
+
+<div class = "answerbox">
   <p  id = "result">  </p>
-   <p  id = "result2">  </p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</div>
 
 
 
@@ -74,318 +43,113 @@ h1{
 
   
   <script>
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    var hcf = []
-    var arr1 = [] //array for factors using R.T
 
-   var arr2 = []  //array for storing info pertaining to CSqr method 
-    var arr3 = []  //array for storing HCF of first two coefficients
-
-   var arr4 = []      //array for storing fractional roots 
-    var surds = []     //array for factors expressed in surd form 
-    var Frsimp = []
-
-
-    function HCF(a, b, c) {
-
-
-
-        for (let h = 100; h > 1; h--) {
-
-          if (a % h == 0 && b % h == 0 && c % h == 0) {
-            hcf.push(h)
-
-            break
-          }
-        } // for loop
-
-        return hcf
-
+    function fadeIn(){
+      document.getElementById("answerbox").classList.add("show");
     }
 
 
+    function simplifySqrt(n) {
+    let outside = 1;
+    let inside = n;
+
+    for (let i = 2; i * i <= inside; i++) {
+        while (inside % (i * i) === 0) {
+            inside /= i * i;
+            outside *= i;
+        }
+    }
+
+    return {outside: outside, inside: inside};
+}
 
 
-    function Factorise(){
+function Factorise(){
      let a = document.getElementById("a").value
       let b = document.getElementById("b").value
       let c = document.getElementById("c").value
-      //answer = a + b + c
-      // document.getElementById("result").innerHTML = answer
+  
 
-       QF(a,b,c)
+       factorQuadratic(a,b,c)
     }
 
 
-    function QF(a, b, c) {
 
+
+function factorQuadratic(a, b, c) {
+
+    // Calculate discriminant
+    let discriminant = b*b - 4*a*c;
+
+    // Check if real roots exist
+    if (discriminant < 0) {
+        var answer = "The quadratic has no real roots." 
+        document.getElementById("result").innerHTML = answer
+        return;
+    }
+    
+   let sqrt = Math.sqrt(discriminant) 
    
+   if(Number.isInteger(sqrt)){
+    let root1 = (-b + Math.sqrt(discriminant)) / (2*a);
+    let root2 = (-b - Math.sqrt(discriminant)) / (2*a);
 
-      HCF(a, b, c)                                //divides each coefficient by its HCF
-      //console.log(a/hcf[0])
-
-
-
-      for (let x = -100; x < 100; x++) {
-        if (a * x * x + b * x + c == 0) {
-
-
-
-          if (Boolean(hcf[0]) == true) {        //if the coefficients have HCF 
-
-
-            a = a / hcf[0]
-            b = b / hcf[0]
-            c = c / hcf[0]
-          }
-
-          arr1.push(x)                //R.T METHOD
-        }
-        } 
+       
+          root1 *= -1    
+          root2 *= -1 
+                  
+                   
+    var answer2 = "1st Root: " + root1 + " " + "2nd Root: " + root2
+    document.getElementById("result2").innerHTML = answer2
 
 
+    // Show factorised form
+    if(root1 != root2){
 
+    var answer = "Factorised Form: " + a + "(x + " + root1 + ")(x + " + root2 + ")";
+        document.getElementById("result").innerHTML = answer
 
-
-
-
-      switch(arr1.length ){                  
-
-
-
-        case 0:
-        console.log("using case 0")
-           FrQF(a,b,c)
-          if ( Boolean(arr4[3]) == true ){   // Non-integer roots but still rational
-            arr4[0] *= -1
-            arr4[2] *= -1
-
-           var answer1 = "The factorised version of " + a + "x^2" + " + " + b + "x" + " + " + c + " is: (" + arr4[1] + 'x + ' + arr4[0] + ')' + "( " + arr4[3] + 'x + ' + arr4[2] + ')' 
-            document.getElementById("result").innerHTML = answer1
-            
-
-          }else if(Boolean(arr4[0]) == true){
-            arr4[0] *= -1
-            var answer2 = "The factorised version of " + a + "x^2" + " + " + b + "x" + " + " + c + " is: (" + arr4[1] + 'x + ' + arr4[0] + ')^2'  
-             document.getElementById("result").innerHTML = answer2
-
-            
-
-          }else { //Non-integer roots that are irrational
-
-          CSqr(a, b, c)
-            if(surds[0] >0 ){
-
-
-              var answer = "The factorised version of " + a + "x^2" + " + " + b + "x" + " + " + c + " is: " + '√('+ surds[0] + "/" + surds[1] + ') - ' + surds[2] + '/' + surds[3] + ' AND ' + '-√('+ surds[0] + "/" + surds[1] + ') - ' + surds[2] + '/' + surds[3]
-               document.getElementById("result").innerHTML = answer
-              
-
-
-      var answer2 =    "The CompleteTheSquare Expression of " + a + "x^2" + " + " + b + "x" + " + " + c + " is: " + a + "(x + " + surds[2] + '/' + surds[3] + ')^2 - ' + surds[4] + '/' + surds[5]
-               document.getElementById("result2").innerHTML = answer2
-              
-            }else{
-               var answer = a + "x^2" + " + " + b + "x" + " + " + c + " has no roots "
-               document.getElementById("result").innerHTML = answer
-            }
-          }
-    break
+  } else {
+  var answer = "Factorised Form: " + a + "(x + " + root1 + ")^2"
+  document.getElementById("result").innerHTML = answer
+}
+}
 
 
 
 
 
+else{ //If sqrt is non-integer
+        let simplified = simplifySqrt(discriminant);
 
-        case 1:   
-        //numerator belongs to b in '(ax + b)(..)' while denominator belongs to a in '(ax + b)(..)'
-      console.log('Case 1')  //one non-integer root and one integer root   
-        FrQF(a,b,c)
-            arr1[0] *= -1
-            arr4[0] *= -1
-           //arr4[2] *= -1
+        let outside = simplified.outside;
+        let inside = simplified.inside;
+        b *= -1
 
 
+        console.log("Roots:");
+        console.log('(' + b + " + " + outside + "√" + inside + ")/" + (2*a));
+        console.log('(' + b + " - " + outside + "√" + inside + ")/" + (2*a));
 
-          if  ( Boolean(hcf[0]) == true){
-
-          console.log('there is hcf')
-             if (arr4[3] == 1 ){
-                  var answer =  "The factorised version of " + a + "x^2" + " + " + b + "x" + " + " + c + " is:" + hcf[0] +  " ("  + 'x + ' + arr4[0] + ')' + "( " +  'x + ' + arr1[0] + ')' 
-                document.getElementById("result").innerHTML = answer
-             }else{
-                var answer = "The factorised version of " + a + "x^2" + " + " + b + "x" + " + " + c + " is:" + hcf[0] +  " (" + arr4[1] + "x + " + arr4[0] + ')' + "( " +  'x + ' + arr1[0] + ')'
-                document.getElementById("result").innerHTML = answer
-               }
-          } 
-
-
-
-
-          else{
-           console.log('there is no hcf')
-
-            if (arr4[1] == 1 ){
-              var answer = "The factorised version of " + a + "x^2" + " + " + b + "x" + " + " + c + " is: ( x + " + arr4[0] + ')' + "( " +  'x + ' + arr1[0] + ')'
-              document.getElementById("result").innerHTML = answer
-            }else{
-
-
-              var answer = "The factorised version of " + a + "x^2" + " + " + b + "x" + " + " + c + " is: (" + arr4[1] + 'x + ' + arr4[0] + ')' + "( " +  'x + ' + arr1[0] + ')'
-            document.getElementById("result").innerHTML = answer}
-          }
-
-
-          //if(a ** 2 + b ** 2 = )
-
-
-
-
-
-
-
-        case 2:
-        for (let x = 0; x < arr1.length; x++) {
-          arr1[x] *=  -1
-        }
-
-       // console.log('This is the 2nd case and arr1 is:' + arr1)
-
-        if (Boolean(hcf[0]) == true) {
-                      var answer =  "The factorised version of " + a + "x^2" + " + " + b + "x" + " + " + c + " is: " + hcf[0] + " ( x + " + arr1[0] + ") ( x + " + arr1[1] + " )" 
-          document.getElementById("result").innerHTML = answer
-        } else {
+        console.log("Factorised form:");
         
-          var answer = "The factorised version of " + a + "x^2" + " + " + b + "x" + " + " + c + " is:  ( x + " + arr1[0] + ") ( x + " + arr1[1] + " ) " 
-          document.getElementById("result").innerHTML = answer
-          
-        }
-
-          break
-
-      }
-
-
-    }
+        if ( b && outside % (2*a) !==0){
+             var answer = a + "(x - (" + b + " + " + outside + 
+             "√" + inside + ")/" + (2*a) + ")" +
+             "(x - (" + b + " - " + outside + "√" + inside + ")/" + (2*a) + ")";
+              document.getElementById("result").innerHTML = answer;
+       }else{
+             outside /= (2*a)
+             b /= (2*a)
     
-    //console.log(QUADFACT(3,18,24)); 
-
-
-
-
-
-
+              var answer = a + "(x - (" + b + " + " + outside + 
+              "√" + inside + ")" + "(x - (" + b + " - " + outside + "√" + inside + ")";
+             document.getElementById("result").innerHTML = answer;
+                }
     
-
-    function CSqr(a, b, c) {
-
-    let n1 = b**2*a  - 4*a*a*c  //n1 and d1 rep. the numerator and denominator of the fraction within the root
-      let d1 = 4 * a ** 3
-      let n2 = b              //n2 and d2 rep. the numerator and denominator of the constant that's added to the root 
-      let d2 = 2 * a
-
-      let n3 = 4 * a**2 *c  - b*b*a//n3 and d3 rep. the numerator and denominator of c  in (a(x+b) + c) 
-      let d3 = 4 * a **2
-      //console.log( 'zuiry' + a)
-
-
-
-
-
-
-       FrSimp(n1,d1)
-      n1 /= Frsimp[0]
-      d1 /= Frsimp[0]
-      FrSimp(n2,d2)
-
-      n2 /= Frsimp[1]
-      d2 /= Frsimp[1]
-
-      FrSimp(n3,d3)
-      n3 /= Frsimp[2]
-      d3 /= Frsimp[2]
-
-
-      surds.push(n1, d1, n2, d2, n3, d3) 
-     
-    }
-
-
-
-
-
-
-
-   
-
-
-    function FrQF(a, b, c) {
-
-      // console.log( 'using positive root ' )
-      for (let n = 1; n < 100; n++) {                 //looops numerator from 1 to 100 
-
-        for (let d = 1; d < 100; d++) {                //loops denominator from 1 to 100 
-          let N = a*(n)*(n) + b * (n*d) + c * d * d
-          let D =  a* a
-          if (N/D == 0) {
-          //  console.log(n + " " + d)
-
-           //  console.log('answer is' + 18 * (-11/9)^2  + 87 * (-11/9) + 77)
-            if (n/d != arr4[arr4.length - 2] / arr4[arr4.length - 1]) {
-              arr4.push(n, d)
-            }
-
-          }
-
-        }
       }
+}
 
-     //console.log( 'using negative root ' )
-      for (let n = 1; n > -100; n--) {                 //looops numerator from 1 to -100 *in terms of decreasing value*
-
-        for (let d = 1; d < 100; d++) {                //loops denominator from 1 to 100 
-
-          if(n/d == arr1[0]){continue }
-          let N = a*(n)*(n) + b * (n*d) + c * d * d
-          let D =  a* a
-
-          if (N/D == 0) {
-           // console.log(n + " " + d)
-
-
-            if (n/d != arr4[arr4.length - 2] / arr4[arr4.length - 1]) {
-
-              arr4.push(n, d)
-            }
-
-          }
-
-        }
-      }
-
-
-
-      return 'The fractional roots are ' + arr4[0] + ' ' + arr4[1] + ' and ' + arr4[2] + '  ' + arr4[3]
-
-    }
-
-   
-
-    function FrSimp(a,b){
-      for (let h = 1000; h > 0; h--) {
-
-        if (a % h == 0 && b % h == 0) {
-          Frsimp.push(h)
-          break
-        }
-      } // for loop
-      //return 'The simplified fraction is ' + a/Frsimp[0] + " " + b/Frsimp[0]
-        return "Simplification completed" //(a/Frsimp[0]) / b/Frsimp[0]
-    }
-
-
-    
-     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   </script>
 
 
