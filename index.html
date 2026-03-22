@@ -48,6 +48,34 @@
       document.getElementById("answerbox").classList.add("show");
     }
 
+    function gcd(a,b){
+    while(b != 0){
+        let temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+    function decimalToFraction(x){
+
+    let tolerance = 1.0E-6;
+    let denominator = 1;
+
+    while(Math.abs(Math.round(x * denominator) - x * denominator) > tolerance){
+        denominator++;
+    }
+
+    let numerator = Math.round(x * denominator);
+
+    let g = gcd(numerator,denominator);
+
+    return {
+        num: numerator/g,
+        den: denominator/g
+    };
+}
+
 
     function simplifySqrt(n) {
     let outside = 1;
@@ -84,7 +112,9 @@ function factorQuadratic(a, b, c) {
     // Check if real roots exist
     if (discriminant < 0) {
         var answer = "The quadratic has no real roots." 
+        var answer2 = "The quadratic has no real roots." 
         document.getElementById("result").innerHTML = answer
+        document.getElementById("result2").innerHTML = answer2
         return;
     }
     
@@ -98,19 +128,24 @@ function factorQuadratic(a, b, c) {
           root1 *= -1    
           root2 *= -1 
                   
-                   
-    var answer2 = "1st Root: " + root1 + " " + "2nd Root: " + root2
+    let f1 = decimalToFraction(root1);
+    let f2 = decimalToFraction(root2);
+
+
+    NewRoot1 =  f1.num + "/" + f1.den
+    NewRoot2 = f2.num + "/" + f2.den
+    var answer2 = "1st Root: " + f1.num + "/" + f1.den + "<br>" + "2nd Root: " + f2.num + "/" + f2.den
     document.getElementById("result2").innerHTML = answer2
 
 
     // Show factorised form
     if(root1 != root2){
 
-    var answer = "Factorised Form: " + a + "(x + " + root1 + ")(x + " + root2 + ")";
+    var answer = "Factorised Form: " + a + "(x + " + f1.num + "/" + f1.den + ")(x + " +f2.num + "/" + f2.den + ")";
         document.getElementById("result").innerHTML = answer
 
   } else {
-  var answer = "Factorised Form: " + a + "(x + " + root1 + ")^2"
+  var answer = "Factorised Form: " + a + "(x + " + NewRoot1 + ")^2"
   document.getElementById("result").innerHTML = answer
 }
 }
@@ -125,22 +160,27 @@ else{ //If sqrt is non-integer
         let outside = simplified.outside;
         let inside = simplified.inside;
         b *= -1
-
-
-        console.log("Roots:");
-        console.log('(' + b + " + " + outside + "√" + inside + ")/" + (2*a));
-        console.log('(' + b + " - " + outside + "√" + inside + ")/" + (2*a));
-
-        console.log("Factorised form:");
+      
         
         if ( b && outside % (2*a) !==0){
-             var answer = a + "(x - (" + b + " + " + outside + 
+             root1 = '(' + b + " + " + outside + "√" + inside + ")/" + (2*a)
+             root2 = '(' + b + " - " + outside + "√" + inside + ")/" + (2*a)
+             var answer2 = "1st Root: " + root1 + " <br>" + "2nd Root: " + root2
+             document.getElementById("result2").innerHTML = answer2;
+          
+             var answer = "Factorised Form: " + a + "(x - (" + b + " + " + outside + 
              "√" + inside + ")/" + (2*a) + ")" +
              "(x - (" + b + " - " + outside + "√" + inside + ")/" + (2*a) + ")";
               document.getElementById("result").innerHTML = answer;
        }else{
              outside /= (2*a)
              b /= (2*a)
+
+
+             root1 =  b + " + " + outside + "√" + inside 
+             root2 = b + " - " + outside + "√" + inside 
+             var answer2 = "1st Root: " + root1 + " <br>" + "2nd Root: " + root2
+             document.getElementById("result2").innerHTML = answer2;
     
               var answer = a + "(x - (" + b + " + " + outside + 
               "√" + inside + ")" + "(x - (" + b + " - " + outside + "√" + inside + ")";
