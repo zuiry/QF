@@ -25,14 +25,14 @@
     <button class = 'btn' onclick = 'Factorise(); fadeIn()'> Factorize Equation </button>
 
 
-<div class = "answerbox">
+<div class = "answerbox" id = Box1>
   <p  id = "result2">  </p>
 
 </div>
 
 
 
-<div class = "answerbox">
+<div class = "answerbox" id = Box2>
   <p  id = "result">  </p>
 </div>
 
@@ -44,21 +44,39 @@
   
   <script>
 
-    function fadeIn(){
-      document.getElementById("answerbox").classList.add("show");
-    }
+function fadeIn() {
+  document.getElementById("Box1").classList.add("show");
+  document.getElementById("Box2").classList.add("show");
 
-    function gcd(a,b){
-    while(b != 0){
-        let temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
 }
 
-    function decimalToFraction(x){
+    function hcf2(a,b){
+   for(i = b;i>1;i--){
+     if(a % i == 0 && b % i == 0){
+       return i
+       break
+     }
+   }
+    }
 
+
+
+    function hcf3(a,b,c){
+   for(e = b;e>1;e--){
+     if(a % e == 0 && b % e == 0 && c % e == 0){
+       return e
+       break
+     }
+   }
+    }
+    
+
+
+
+    
+
+    function decimalToFraction(x){
+   
     let tolerance = 1.0E-6;
     let denominator = 1;
 
@@ -68,12 +86,17 @@
 
     let numerator = Math.round(x * denominator);
 
-    let g = gcd(numerator,denominator);
-
+    let g = hcf2(numerator,denominator);
+ if( Boolean( hcf2(numerator,denominator) ) == true ){
     return {
         num: numerator/g,
         den: denominator/g
-    };
+    }
+  }else{
+      return{
+      num: numerator,
+        den: denominator}
+    }
 }
 
 
@@ -118,36 +141,51 @@ function factorQuadratic(a, b, c) {
         return;
     }
     
+
    let sqrt = Math.sqrt(discriminant) 
    
    if(Number.isInteger(sqrt)){
     let root1 = (-b + Math.sqrt(discriminant)) / (2*a);
     let root2 = (-b - Math.sqrt(discriminant)) / (2*a);
 
-       
-          root1 *= -1    
-          root2 *= -1 
+  
                   
+
+
     let f1 = decimalToFraction(root1);
     let f2 = decimalToFraction(root2);
 
+    if(f1.den == 1 ){
+      NewRoot1 =  f1.num 
+    }else{
+      NewRoot1 =  f1.num + "/" + f1.den
+    }
 
-    NewRoot1 =  f1.num + "/" + f1.den
-    NewRoot2 = f2.num + "/" + f2.den
-    var answer2 = "1st Root: " + f1.num + "/" + f1.den + "<br>" + "2nd Root: " + f2.num + "/" + f2.den
+    if(f2.den == 1){
+      NewRoot2 = f2.num 
+    }else{
+      NewRoot2 = f2.num + "/" + f2.den
+    }
+    
+    
+    var answer2 = "1st Root: " + NewRoot1 + "<br>" + "2nd Root: " + NewRoot2
     document.getElementById("result2").innerHTML = answer2
 
-
+  f1.num *=-1
+  f2.num *= -1
     // Show factorised form
-    if(root1 != root2){
+   
 
-    var answer = "Factorised Form: " + a + "(x + " + f1.num + "/" + f1.den + ")(x + " +f2.num + "/" + f2.den + ")";
+    if ( Boolean(hcf3(a,b,c) ==true )){
+       var answer = "Factorised Form: " + a + '(' + f1.den + "x + " + f1.num +")" +    "(" + f2.den + "x + " + f2.num + ")";
         document.getElementById("result").innerHTML = answer
+    } else{
+      var answer = "Factorised Form: "  +'(' + f1.den + "x + " + f1.num +")" +    "(" + f2.den + "x + " + f2.num + ")";
+        document.getElementById("result").innerHTML = answer
+    }
+    
 
-  } else {
-  var answer = "Factorised Form: " + a + "(x + " + NewRoot1 + ")^2"
-  document.getElementById("result").innerHTML = answer
-}
+  
 }
 
 
@@ -163,15 +201,28 @@ else{ //If sqrt is non-integer
       
         
         if ( b && outside % (2*a) !==0){
+
              root1 = '(' + b + " + " + outside + "√" + inside + ")/" + (2*a)
              root2 = '(' + b + " - " + outside + "√" + inside + ")/" + (2*a)
              var answer2 = "1st Root: " + root1 + " <br>" + "2nd Root: " + root2
              document.getElementById("result2").innerHTML = answer2;
           
+
+
+
+             if ( Boolean(hcf3(a,b,c) ==true )){
              var answer = "Factorised Form: " + a + "(x - (" + b + " + " + outside + 
              "√" + inside + ")/" + (2*a) + ")" +
              "(x - (" + b + " - " + outside + "√" + inside + ")/" + (2*a) + ")";
               document.getElementById("result").innerHTML = answer;
+             } else{
+              var answer = "Factorised Form: "  + "(x - (" + b + " + " + outside + 
+             "√" + inside + ")/" + (2*a) + ")" +
+             "(x - (" + b + " - " + outside + "√" + inside + ")/" + (2*a) + ")";
+              document.getElementById("result").innerHTML = answer;
+             }
+
+
        }else{
              outside /= (2*a)
              b /= (2*a)
@@ -182,11 +233,19 @@ else{ //If sqrt is non-integer
              var answer2 = "1st Root: " + root1 + " <br>" + "2nd Root: " + root2
              document.getElementById("result2").innerHTML = answer2;
     
+
+
+
+if ( Boolean(hcf3(a,b,c) ==true )){
               var answer = a + "(x - (" + b + " + " + outside + 
               "√" + inside + ")" + "(x - (" + b + " - " + outside + "√" + inside + ")";
              document.getElementById("result").innerHTML = answer;
+                }else{
+              var answer =  "(x - (" + b + " + " + outside + 
+              "√" + inside + ")" + "(x - (" + b + " - " + outside + "√" + inside + ")";
+             document.getElementById("result").innerHTML = answer;
                 }
-    
+              }
       }
 }
 
