@@ -176,7 +176,7 @@ function factorQuadratic(a, b, c) {
     // Show factorised form
    
 
-    if ( Boolean(hcf3(a,b,c) ==true )){
+    if ( Boolean(hcf3(a,b,c)  )){
        var answer = "Factorised Form: " + a + '(' + f1.den + "x + " + f1.num +")" +    "(" + f2.den + "x + " + f2.num + ")";
         document.getElementById("result").innerHTML = answer
     } else{
@@ -210,7 +210,7 @@ else{ //If sqrt is non-integer
 
 
 
-             if ( Boolean(hcf3(a,b,c) ==true )){
+             if ( Boolean(hcf3(a,b,c))){
              var answer = "Factorised Form: " + a + "(x - (" + b + " + " + outside + 
              "√" + inside + ")/" + (2*a) + ")" +
              "(x - (" + b + " - " + outside + "√" + inside + ")/" + (2*a) + ")";
@@ -236,7 +236,7 @@ else{ //If sqrt is non-integer
 
 
 
-if ( Boolean(hcf3(a,b,c) ==true )){
+if ( Boolean(hcf3(a,b,c))){
               var answer = a + "(x - (" + b + " + " + outside + 
               "√" + inside + ")" + "(x - (" + b + " - " + outside + "√" + inside + ")";
              document.getElementById("result").innerHTML = answer;
